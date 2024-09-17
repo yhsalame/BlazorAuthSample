@@ -12,8 +12,19 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
 //----- Register Service Here -----
-builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = "CustomScheme";
+    options.DefaultChallengeScheme = "CustomScheme";
+})
+.AddScheme<CustomAuthOptions, CustomAuthenticationHandler>("CustomScheme", options => { });
+
 builder.Services.AddAuthorizationCore();
+
+builder.Services.AddBlazoredLocalStorage();
+builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
+builder.Services.AddHttpClient();
 //---------------------------------
 
 var app = builder.Build();
